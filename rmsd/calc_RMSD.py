@@ -15,11 +15,11 @@ structure_file = reference_file
 trajectory = '../trjcat/all.xtc'
 uni = Universe(structure_file, trajectory)
 
-R = RMSD(uni, ref, select = 'name CA')
+R = RMSD(uni, ref, select='name CA')
 print(R.run())
 
 # write
-#with open('rmsd.csv', 'w+') as f:
+# with open('rmsd.csv', 'w+') as f:
 #    for i in range(l):
 #        f.write("%8d, %3.4f\n" % (i, ary[i]))
 np.savetxt('rmsd.csv', R.rmsd, delimiter=', ')
