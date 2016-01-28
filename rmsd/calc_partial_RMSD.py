@@ -14,7 +14,7 @@ trajectory_file = '/path/to/trajectory/file'
 sel_fit = 'protein and name CA'
 sel_calc = {
     'TM1': '101:133',
-    'TM2': '137:157', # etc...
+    'TM2': '137:157',  # etc...
 }
 selection_tmpl = 'name CA and resid %s'
 
@@ -24,6 +24,7 @@ plotting = True
 
 #############
 
+
 def fit(P, Q):
     # P:mobile, Q:reference
     P -= centroid(P)
@@ -32,11 +33,14 @@ def fit(P, Q):
     moved = np.dot(P, rot)
     return(moved)
 
+
 def centroid(X):
     C = np.sum(X, axis=0) / len(X)
     return(C)
 
 # implement of Kabsch algorithm for calc rotation matrix
+
+
 def kabsch(P, Q):
     A = np.dot(P.T, Q)
     V, S, W = np.linalg.svd(A)
@@ -49,6 +53,7 @@ def kabsch(P, Q):
     # U:rotation Matrix
     U = np.dot(V, W)
     return(U)
+
 
 def rmsd(calc, ref):
     # rmsd for all residues => return a single rmsd value, mean for all
@@ -137,7 +142,7 @@ if not plotting:
     sys.stderr.write('End program without plotting.')
     sys.exit(0)
 
-# 7. plotting 
+# 7. plotting
 sys.stderr.write('Start plotting ...\n')
 import matplotlib as mpl
 mpl.use('Agg')
