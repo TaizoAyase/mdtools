@@ -3,3 +3,6 @@
 *.swp
 martini_tools/
 test_files/
+*.png
+*.csv
+*.pyc
