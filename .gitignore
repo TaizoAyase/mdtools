@@ -6,3 +6,12 @@ test_files/
 *.png
 *.csv
 *.pyc
+*.pdb
+*.psf
+*.dcd
+*.coor
+*.trr
+*.xtc
+*.gro
+*.cpt
+*.tpr
