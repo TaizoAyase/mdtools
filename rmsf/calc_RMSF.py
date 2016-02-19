@@ -166,5 +166,5 @@ for (at, coord) in zip(sel_target, coord_ave):
     else:
         b_fac = 0
     lst = (i, at.name, at.resname, at.resnum, coord[0], coord[1], coord[2], b_fac)
-    f.write("ATOM  %5d %-4s %3s   %3d      %2.3f  %2.3f  %2.3f  1.00  %1.2f\n" % lst)
+    f.write("ATOM  %5d %-4s %3s   %3d    %8.3f%8.3f%8.3f  1.00  %1.2f\n" % lst)
 f.close()
