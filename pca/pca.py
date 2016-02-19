@@ -3,9 +3,19 @@
 from __future__ import print_function
 from MDAnalysis import *
 import numpy as np
-import scipy.linalg as lag
+import scipy
 import sys
 import os
+
+#
+# script for performing Principal component analysis (PCA) for MD trajectory
+# performed by diagonalizing the covariance matrix
+# covariance matrix is built based on deviation
+# from avaraged structure of protein C-alhpa atoms
+#
+# finally, cuemol (http://www.cuemol.org/) scene file
+# with protein PDB and eigen vectors will be written
+#
 
 ##### setup #####
 #
@@ -116,7 +126,7 @@ np.savetxt(cov_out, cov, delimiter=', ')
 
 # calc eigen values
 sys.stderr.write('Calc eigen vectors and eigen values ...\n')
-values, vectors = lag.eigh(cov, turbo=True)
+values, vectors = scipy.linalg.eigh(cov, turbo=True)
 
 sys.stderr.write('Write out the eigen vector/value file ...\n')
 np.savetxt('eigen_val.csv', values, delimiter=', ')
@@ -166,7 +176,7 @@ prot_sel.write(pdb_out, format='PDB')
 
 f = open(qsc_out, 'w+')
 
-header = """<?xml version="1.0" encoding="utf-8"?>
+header = '''<?xml version="1.0" encoding="utf-8"?>
 <scene>
     <qsc_opts base64="false" compress="none" version="QDF0"/>
     <object type="MolCoord" alt_src="%s" name="prot" sel="*" srctype="pdb" src="%s">
@@ -180,7 +190,7 @@ header = """<?xml version="1.0" encoding="utf-8"?>
         <renderer type="tube" group="" name="tube1" style="DefaultHSCPaint"/>
         <renderer type="*selection" visible="false"/>
         <renderer type="*namelabel" style="DefaultAtomLabel"/>
-""" % (os.path.abspath(pdb_out), pdb_out)
+''' % (os.path.abspath(pdb_out), pdb_out)
 
 f.write(header)
 
