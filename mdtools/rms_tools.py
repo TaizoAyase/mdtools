@@ -2,7 +2,6 @@
 
 from __future__ import print_function
 import numpy as np
-from MDAnalysis import *
 
 
 def fit(P, Q):
