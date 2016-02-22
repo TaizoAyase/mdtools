@@ -17,3 +17,5 @@ __pycache__
 *.gro
 *.cpt
 *.tpr
+*.qsc
+*.txt

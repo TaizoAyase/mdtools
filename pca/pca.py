@@ -4,7 +4,7 @@ from __future__ import print_function
 from mdtools.rms_tools import fit, centroid, kabsch, rmsd, superpose
 from MDAnalysis import *
 import numpy as np
-import scipy
+import scipy.linalg
 import sys
 import os
 
@@ -81,16 +81,14 @@ for ts in uni.trajectory:
 
 sys.stderr.write('\n')
 
-# np.cov result is defferent by n_frames ** 2 order
 sys.stderr.write('Building covariance matrix ...\n')
-deviation_all /= n_frames
-cov = np.cov(deviation_all.T) * n_frames * n_frames
+cov = np.cov(deviation_all.T)
 
 np.savetxt(cov_out, cov, delimiter=', ')
 
 # calc eigen values
 sys.stderr.write('Calc eigen vectors and eigen values ...\n')
-values, vectors = scipy.linalg.eigh(cov, turbo=True)
+values, vectors = scipy.linalg.eigh(cov)
 
 sys.stderr.write('Write out the eigen vector/value file ...\n')
 np.savetxt('eigen_val.csv', values, delimiter=', ')
@@ -131,7 +129,7 @@ f.close()
 # projection
 sys.stderr.write('Write out the projection file ...\n')
 proj_vec = np.dot(deviation_all, vectors)
-np.savetxt('proj_all.csv', proj_vec, delimiter=', ')
+np.savetxt(proj_out, proj_vec[:, :prcomp], , delimiter=', ')
 
 # write out qsc-file to visualize
 sys.stderr.write('Write out the QSC file ...\n')
