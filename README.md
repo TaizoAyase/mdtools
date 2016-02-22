@@ -15,6 +15,13 @@ for using MDAnalysis module, **python 2.x is required**
 * seaborn (>= 0.7.0)
 * matplotlib (>= 1.5.0)
 
+Need to set your PYTHONPATH:
+
+```
+export PYTHONPATH=/path/to/mdtools/directory:$PYTHONPATH
+```
+(for bash)
+
 ##Required ruby package
 
 * bioruby(>= 1.5.0)
