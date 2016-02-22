@@ -3,6 +3,8 @@
 *.swp
 martini_tools/
 test_files/
+__pycache__
+*.pyc
 *.png
 *.csv
 *.pyc

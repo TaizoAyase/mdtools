@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
+from mdtools.rms_tools import fit, centroid, kabsch, rmsd, superpose
 from MDAnalysis import *
 import numpy as np
 import scipy
@@ -34,42 +35,6 @@ qsc_out = 'showvec.qsc'
 eigval_threshold = 90  # % of total was displayed
 prcomp = 5  # max num of components to write
 scale_factor = 5  # for showing vectors in qsc
-
-#################
-
-
-def centroid(X):
-    C = np.sum(X, axis=0) / len(X)
-    return(C)
-
-
-# implement Kabsch algorithm for calc rotation matrix
-def kabsch(P, Q):
-    A = np.dot(P.T, Q)
-    V, S, W = np.linalg.svd(A)
-    d = (np.linalg.det(V) * np.linalg.det(W)) < 0.0
-
-    if d:
-        V[:, -1] = -V[:, -1]
-
-    # U:rotation Matrix
-    U = np.dot(V, W)
-    return(U)
-
-
-def rmsd(calc, ref):
-    # rmsd for all residues => return a single rmsd value, mean for all
-    msd = np.sum((calc - ref) ** 2)
-    result = np.sqrt(msd / len(calc))
-    return(result)
-
-
-def superpose(coord, ref):
-    ref -= centroid(ref)
-    coord -= centroid(coord)
-    rot_matrix = kabsch(coord, ref)
-    moved_coord = np.dot(coord, rot_matrix)
-    return moved_coord
 
 
 ##################
@@ -106,7 +71,6 @@ coord_ave /= n_frames
 # build covariance matrix
 # sum(deviation x deviation) / frames
 sys.stderr.write('Calc covariance matrix ...\n')
-deviation = np.zeros(dof)
 deviation_all = np.zeros((n_frames, dof))
 uni.trajectory[0]
 for ts in uni.trajectory:

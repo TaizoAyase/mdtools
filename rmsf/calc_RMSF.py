@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
+from __future__ import print_function, absolute_import
+from mdtools.rms_tools import fit, centroid, kabsch, rmsd
 from MDAnalysis import *
 import numpy as np
 import sys
@@ -16,33 +17,6 @@ topology_file = '/path/to/your/topology/file'
 trajectory_file = '/path/to/your/trajectroy/file'
 
 ###################
-
-def centroid(X):
-    C = np.sum(X, axis=0) / len(X)
-    return C
-
-
-# implement of Kabsch algorithm for calc rotation matrix
-def kabsch(P, Q):
-    A = np.dot(P.T, Q)
-    V, S, W = np.linalg.svd(A)
-    d = (np.linalg.det(V) * np.linalg.det(W)) < 0.0
-
-    if d:
-        # S[-1] = -S[-1]
-        V[:, -1] = -V[:, -1]
-
-    # U:rotation Matrix
-    U = np.dot(V, W)
-    return U
-
-
-def rmsd(calc, ref):
-    # rmsd for all residues => return a single rmsd value, mean for all resid
-    msd = np.sum((calc - ref) ** 2)
-    result = np.sqrt(msd / len(calc))
-    return(result)
-
 
 def output(ary):
     l = len(ary)
