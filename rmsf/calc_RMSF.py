@@ -2,6 +2,7 @@
 
 from __future__ import print_function, absolute_import
 from mdtools.rms_tools import fit, centroid, kabsch, rmsd
+from tqdm import tqdm
 from MDAnalysis import *
 import numpy as np
 import sys
@@ -38,9 +39,7 @@ def average(uni, ref_coord):
     com_ref = centroid(ref_coord)
     ref_coord -= com_ref
 
-    for ts in uni.trajectory:
-        sys.stderr.write("Calc for %d/%d ... \r" % (ts.frame, frame_tot))
-
+    for ts in tqdm(uni.trajectory):
         mobile_coord = sel_cal.coordinates()
         target_coord = sel_write.coordinates()
 
@@ -54,7 +53,6 @@ def average(uni, ref_coord):
         coord_ave += moved_coord
 
     coord_ave /= frame_tot
-    sys.stderr.write("\n")
     return coord_ave
 
 
@@ -101,9 +99,7 @@ frame_tot = uni.trajectory.n_frames
 sumsquare = 0
 com_ref = centroid(ref_average)
 ref_average -= com_ref
-for ts in uni.trajectory:
-    sys.stderr.write("Calc for %d/%d ... \r" % (ts.frame, frame_tot))
-
+for ts in tqdm(uni.trajectory):
     mobile_coord = sel_ca.coordinates()
     com_mobile = centroid(mobile_coord)
     trans_vect = com_ref - com_mobile
@@ -114,8 +110,6 @@ for ts in uni.trajectory:
     moved_coord = np.dot(mobile_coord, rotation_matrix)
 
     sumsquare += np.sum((moved_coord - ref_average) ** 2, axis=1)
-
-sys.stderr.write("\n")
 
 sumsquare /= frame_tot
 rmsf = np.sqrt(sumsquare)

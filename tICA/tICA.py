@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 from mdtools.rms_tools import fit, centroid, kabsch, rmsd, superpose
+from tqdm import tqdm
 from MDAnalysis import *
 import numpy as np
 import scipy.linalg
@@ -57,11 +58,9 @@ dof = n_atoms * 3
 # make average coordinate
 coord_ave = np.zeros(dof)
 sys.stderr.write('Calc average coordinate...\n')
-for ts in uni.trajectory:
-    sys.stderr.write('Loading trajectory %d/%d ...\r' % (ts.frame, n_frames))
+for ts in tqdm(uni.trajectory):
     coord = superpose(sel_ca.coordinates(), ref_coord).flatten()
     coord_ave += coord
-sys.stderr.write('\n')
 coord_ave /= n_frames
 
 
@@ -70,17 +69,14 @@ coord_ave /= n_frames
 sys.stderr.write('Calc deviation from averaged structure ...\n')
 deviation_all = np.zeros((n_frames, dof))
 uni.trajectory[0]
-for ts in uni.trajectory:
-    sys.stderr.write('Loading trajectory %d/%d ...\r' % (ts.frame, n_frames))
+for ts in tqdm(uni.trajectory):
     coord = superpose(sel_ca.coordinates(), ref_coord).flatten()
     deviation = coord - coord_ave
     deviation_all[ts.frame] = deviation
-sys.stderr.write('\n')
-
 
 sys.stderr.write('Calc time-lagged correlation matrix ...\n')
 offset_correl_tmp = np.zeros((dof, dof))
-for i in xrange(0, n_frames - lag_step):
+for i in tqdm(xrange(0, n_frames - lag_step)):
     sys.stderr.write('Building %d/%d ...\r' % (i, n_frames - lag_step))
     offset_correl_tmp += np.outer(deviation_all[i], deviation_all[i+lag_step])
 sys.stderr.write('\n')

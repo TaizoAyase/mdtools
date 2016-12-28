@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 from mdtools.rms_tools import fit, centroid, kabsch, rmsd, superpose
+from tqdm import tqdm
 from MDAnalysis import *
 import numpy as np
 import scipy.linalg
@@ -58,11 +59,9 @@ dof = n_atoms * 3
 # make average coordinate
 coord_ave = np.zeros(dof)
 sys.stderr.write('Calc average coordinate...\n')
-for ts in uni.trajectory:
-    sys.stderr.write('Loading trajectory %d/%d ...\r' % (ts.frame, n_frames))
+for ts in tqdm(uni.trajectory):
     coord = superpose(sel_ca.coordinates(), ref_coord).flatten()
     coord_ave += coord
-sys.stderr.write('\n')
 coord_ave /= n_frames
 
 
@@ -71,13 +70,11 @@ coord_ave /= n_frames
 sys.stderr.write('Calc covariance matrix ...\n')
 deviation_all = np.zeros((n_frames, dof))
 uni.trajectory[0]
-for ts in uni.trajectory:
-    sys.stderr.write('Loading trajectory %d/%d ...\r' % (ts.frame, n_frames))
+for ts in tqdm(uni.trajectory):
     coord = superpose(sel_ca.coordinates(), ref_coord).flatten()
     deviation = coord - coord_ave
     deviation_all[ts.frame] = deviation
 
-sys.stderr.write('\n')
 
 sys.stderr.write('Building covariance matrix ...\n')
 cov = np.cov(deviation_all.T)
@@ -127,7 +124,7 @@ f.close()
 # projection
 sys.stderr.write('Write out the projection file ...\n')
 proj_vec = np.dot(deviation_all, vectors)
-np.savetxt(proj_out, proj_vec[:, :prcomp], , delimiter=', ')
+np.savetxt(proj_out, proj_vec[:, :prcomp], delimiter=', ')
 
 # write out qsc-file to visualize
 sys.stderr.write('Write out the QSC file ...\n')
