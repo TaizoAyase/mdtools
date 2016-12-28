@@ -11,8 +11,16 @@ for using MDAnalysis module, **python 2.x is required**
 
 * [MDAnalysis](http://www.mdanalysis.org/) (>=0.13.0)
 * numpy (>= 1.10.4)
+* scipy (>= 0.15.1)
 * seaborn (>= 0.7.0)
 * matplotlib (>= 1.5.0)
+
+Need to set your PYTHONPATH:
+
+```
+export PYTHONPATH=/path/to/mdtools/directory:$PYTHONPATH
+```
+(for bash)
 
 ##Required ruby package
 
