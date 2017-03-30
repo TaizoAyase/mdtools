@@ -51,7 +51,7 @@ sel_ca_ref = uni_ref.select_atoms(fit)
 if sel_ca.n_atoms != sel_ca_ref.n_atoms:
     raise RuntimeError('Atom number is not matched.')
 
-ref_coord = sel_ca_ref.coordinates()
+ref_coord = sel_ca_ref.positions
 n_frames = uni.trajectory.n_frames
 n_atoms = sel_ca_ref.n_atoms
 dof = n_atoms * 3
@@ -60,7 +60,7 @@ dof = n_atoms * 3
 coord_ave = np.zeros(dof)
 sys.stderr.write('Calc average coordinate...\n')
 for ts in tqdm(uni.trajectory):
-    coord = superpose(sel_ca.coordinates(), ref_coord).flatten()
+    coord = superpose(sel_ca.positions, ref_coord).flatten()
     coord_ave += coord
 coord_ave /= n_frames
 
@@ -71,7 +71,7 @@ sys.stderr.write('Calc covariance matrix ...\n')
 deviation_all = np.zeros((n_frames, dof))
 uni.trajectory[0]
 for ts in tqdm(uni.trajectory):
-    coord = superpose(sel_ca.coordinates(), ref_coord).flatten()
+    coord = superpose(sel_ca.positions, ref_coord).flatten()
     deviation = coord - coord_ave
     deviation_all[ts.frame] = deviation
 
@@ -124,7 +124,7 @@ f.close()
 # projection
 sys.stderr.write('Write out the projection file ...\n')
 proj_vec = np.dot(deviation_all, vectors)
-np.savetxt(proj_out, proj_vec[:, :prcomp], delimiter=', ')
+np.savetxt(proj_out, proj_vec[:, :prcomp:-1], delimiter=', ')
 
 # write out qsc-file to visualize
 sys.stderr.write('Write out the QSC file ...\n')
@@ -154,7 +154,7 @@ f.write(header)
 rend_line = '\t\t<renderer type="atomintr" color="#BF0000" mode="fancy" showlabel="false" stipple0="1000.0" name="dom%d" visible="false" width="0.3">\n'
 vect_line = '\t\t<line pos1="(%3.5f, %3.5f, %3.5f)" pos2="(%3.5f, %3.5f, %3.5f)"/>\n'
 tail_line = '\t\t</renderer>\n'
-ref_coord = sel_ca_ref.coordinates()
+ref_coord = sel_ca_ref.positions
 
 for i in xrange(prcomp):
     f.write(rend_line % i)
