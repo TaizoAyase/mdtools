@@ -77,7 +77,7 @@ int main(int argc, char const *argv[])
     double temp = 310; // temperature in K
 
     // io file params
-    string outputfile = "weight.dat";
+    string outputfile = "weight.txt";
     string input_pattern;
     double tolerance = 1e-12;
 
