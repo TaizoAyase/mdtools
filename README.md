@@ -14,6 +14,7 @@ for using MDAnalysis module, **python 2.x is required**
 * scipy (>= 0.15.1)
 * seaborn (>= 0.7.0)
 * matplotlib (>= 1.5.0)
+* tqdm (>= 4.10.0)
 
 Need to set your PYTHONPATH:
 
