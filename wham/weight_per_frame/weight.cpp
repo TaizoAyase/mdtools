@@ -67,7 +67,8 @@ double bias(double current, double center, double spring);
 
 int main(int argc, char const *argv[])
 {
-    const double boltzman = 0.001987191683; // kcal/mol
+    const double boltzmann = 0.001987191683; // kcal/mol/K
+    //const double boltzmann = 0.008314462175; // kJ/mol/K
 
     // parameters 
     int N; // num of data points
@@ -178,7 +179,7 @@ int main(int argc, char const *argv[])
     pmf = new double[n_replica];
 
     // calc
-    const double beta = 1 / (temp * boltzman);
+    const double beta = 1 / (temp * boltzmann);
     int n_run = 0;
     while (rmsd > tolerance) {
         printf("WHAM run #%d\n", n_run);
