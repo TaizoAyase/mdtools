@@ -61,12 +61,12 @@ for k in calc.keys():
 
 
 # 4. reference coordinate sets
-ref_coord = sel_ref.coordinates()
+ref_coord = sel_ref.positions
 com_ref = centroid(ref_coord)
 ref_coord -= com_ref
 ref_coord_sets = {}
 for k, v in ref_selections.items():
-    coord = v.coordinates() - com_ref
+    coord = v.positions - com_ref
     ref_coord_sets[k] = coord
 
 
@@ -74,14 +74,14 @@ for k, v in ref_selections.items():
 for ts in uni.trajectory:
     sys.stderr.write("Calc for %d/%d ... \r" % (ts.frame, t_tot))
 
-    mob_coord = sel_mob.coordinates()
+    mob_coord = sel_mob.positions
     com_mob = centroid(mob_coord)
     mob_coord -= com_mob
 
     rot_matrix = kabsch(mob_coord, ref_coord)
 
     for k, sel in selections.items():
-        cal_coord = sel.coordinates()
+        cal_coord = sel.positions
         cal_coord -= com_mob
         moved_coord = np.dot(cal_coord, rot_matrix)
         val = rmsd(moved_coord, ref_coord_sets[k])
@@ -94,7 +94,7 @@ with open(rmsd_out, 'w+') as f:
     tmpl = '%s, ' * (len(results) - 1) + '%s\n'
     string = tmpl % tuple(results.keys())
     f.write(string)
-    for i in xrange(t_tot):
+    for i in range(t_tot):
         tmpl = '%2.4f, ' * (len(results) - 1) + '%2.4f\n'
         d = [results[k][i] for k in results.keys()]
         string = tmpl % tuple(d)
@@ -108,15 +108,17 @@ if not plotting:
 sys.stderr.write('Start plotting ...\n')
 import matplotlib as mpl
 mpl.use('Agg')
+import matplotlib.pyplot as plt
 import seaborn as sbn
 
 t = np.arange(t_tot)
 sbn.plt.hold(False)
 for k, v in results.items():
-    sbn.tsplot(v, time=t)
-    sbn.plt.title('RMSD of %s; fitting %s' % (k, fit))
-    sbn.plt.xlabel('Time step')
-    sbn.plt.ylabel('RMSD (A)')
-    sbn.plt.savefig('RMSD_%s.png' % k)
+    #sbn.tsplot(v, time=t)
+    plt.plot(v)
+    plt.title('RMSD of %s; fitting %s' % (k, fit))
+    plt.xlabel('Time step')
+    plt.ylabel('RMSD (A)')
+    plt.savefig('RMSD_%s.png' % k)
 
 sys.stderr.write('Exitting normally.\n')
