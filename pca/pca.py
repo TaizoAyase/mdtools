@@ -25,10 +25,6 @@ reference_file = '/path/to/reference/pdb_or_gro'
 structure_file = reference_file
 trajectory_file = '/path/to/trajectory/file'
 
-reference_file = '../test_files/chainB.gro'
-structure_file = reference_file
-trajectory_file = '../test_files/chainB.xtc'
-
 fit = 'name CA'
 
 cov_out = 'covar.csv'
@@ -41,7 +37,7 @@ eigval_threshold = 90  # % of total was displayed
 prcomp = 5  # max num of components to write
 scale_factor = 5  # for showing vectors in qsc
 
-chunk_size = 1
+chunk_size = 100
 
 ##################
 
@@ -50,22 +46,21 @@ sys.stderr.write('Loading Universe ...\n')
 ref = md.load(reference_file)
 
 sel_ca = ref.topology.select(fit)
-sel_ca_ref = ref.topology.select(fit)
 
-if len(sel_ca) != len(sel_ca_ref):
-    raise RuntimeError('Atom number is not matched.')
 
-ref_coord = ref.xyz[0, sel_ca_ref, :] * 10. # nm to A
+ref_coord = ref.xyz[0, sel_ca, :] * 10. # nm to A
 n_frames = 0
 n_atoms = len(sel_ca)
 dof = n_atoms * 3
+
 
 # make average coordinate
 coord_ave = np.zeros(dof)
 sys.stderr.write('Calc average coordinate...\n')
 for chunk in tqdm(md.iterload(trajectory_file, top=structure_file, chunk=chunk_size)):
-    coord = superpose(chunk.xyz[0, sel_ca_ref, :] * 10, ref_coord).flatten()
-    coord_ave += coord
+    for j in range(chunk.n_frames):
+        coord = superpose(chunk.xyz[j, sel_ca, :] * 10, ref_coord).flatten()
+        coord_ave += coord
     n_frames += chunk.n_frames
 coord_ave /= n_frames
 
@@ -75,11 +70,12 @@ coord_ave /= n_frames
 sys.stderr.write('Calc covariance matrix ...\n')
 deviation_all = np.zeros((n_frames, dof))
 i = 0
-for chunk in tqdm(md.iterload(trajectory_file, top=structure_file, chunk=chunk_size), total=n_frames):
-    coord = superpose(chunk.xyz[0, sel_ca_ref, :] * 10, ref_coord).flatten()
-    deviation = coord - coord_ave
-    deviation_all[i] = deviation
-    i += 1
+for chunk in tqdm(md.iterload(trajectory_file, top=structure_file, chunk=chunk_size)):
+    for j in range(chunk.n_frames):
+        coord = superpose(chunk.xyz[j, sel_ca, :] * 10, ref_coord).flatten()
+        deviation = coord - coord_ave
+        deviation_all[i] = deviation
+        i += 1
 
 
 sys.stderr.write('Building covariance matrix ...\n')
@@ -160,8 +156,7 @@ f.write(header)
 rend_line = '\t\t<renderer type="atomintr" color="#BF0000" mode="fancy" showlabel="false" stipple0="1000.0" name="dom%d" visible="false" width="0.3">\n'
 vect_line = '\t\t<line pos1="(%3.5f, %3.5f, %3.5f)" pos2="(%3.5f, %3.5f, %3.5f)"/>\n'
 tail_line = '\t\t</renderer>\n'
-#ref_coord = sel_ca_ref.positions
-ref_coord = ref.xyz[0, sel_ca_ref, :] * 10 # nm to A
+ref_coord = ref.xyz[0, sel_ca, :] * 10 # nm to A
 
 for i in range(prcomp):
     f.write(rend_line % i)
