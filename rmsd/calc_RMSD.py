@@ -14,9 +14,9 @@ import mdtraj as md
 
 ### parameters ###
 
-reference_file = '../test_files/chainB.gro'
+reference_file = '/path/to/reference/pdb_or_gro'
 structure_file = reference_file
-trajectory = '../test_files/chainB.xtc'
+trajectory = '/path/to/trajectory/file'
 
 target_selection = 'name CA'
 
