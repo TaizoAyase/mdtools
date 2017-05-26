@@ -8,14 +8,18 @@ using python, ruby, Gromacs-built-in-tools(>=5.0.5) etc...
 
 ## Required python package
 
-for using MDAnalysis module, **python 2.x is required**
-
-* [MDAnalysis](http://www.mdanalysis.org/) (>=0.13.0)
+* [mdtraj](http://mdtraj.org/) (>= 1.8.0)
 * numpy (>= 1.10.4)
 * scipy (>= 0.15.1)
 * seaborn (>= 0.7.0)
 * matplotlib (>= 1.5.0)
 * tqdm (>= 4.10.0)
+
+Some script is only compatible with MDAnalysis module.
+For using scripts, **python 2.x is required**
+Please see the import statement in the scripts.
+
+* [MDAnalysis](http://www.mdanalysis.org/) (>=0.13.0)
 
 Need to set your PYTHONPATH:
 
