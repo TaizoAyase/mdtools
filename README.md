@@ -16,7 +16,7 @@ using python, ruby, Gromacs-built-in-tools(>=5.0.5) etc...
 * tqdm (>= 4.10.0)
 
 Some script is only compatible with MDAnalysis module.
-For using scripts, **python 2.x is required**
+For using scripts, **python 2.x is required**.
 Please see the import statement in the scripts.
 
 * [MDAnalysis](http://www.mdanalysis.org/) (>=0.13.0)
