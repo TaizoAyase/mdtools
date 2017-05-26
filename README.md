@@ -1,11 +1,15 @@
 mdtools
 ==========
-#About
+
+# About
 scripts for analysis of MD trajectory
 
 using python, ruby, Gromacs-built-in-tools(>=5.0.5) etc...
 
-##Required python package
+WARNING!!!
+This branch is already out-dated.
+
+## Required python package
 
 for using MDAnalysis module, **python 2.x is required**
 
@@ -23,10 +27,10 @@ export PYTHONPATH=/path/to/mdtools/directory:$PYTHONPATH
 ```
 (for bash)
 
-##Required ruby package
+## Required ruby package
 
 * bioruby(>= 1.5.0)
 
-##License
+## License
 
 As the license of MDAnalysis module indicates, all source code in this repository is available under the GNU General Public License, version 2 (or an open source licence compatible with GPLv2).
