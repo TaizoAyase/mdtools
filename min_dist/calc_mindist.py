@@ -5,6 +5,11 @@ import numpy as np
 import sys
 from MDAnalysis import *
 from itertools import product
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 ### setup ###
 
@@ -21,8 +26,10 @@ target_pairs = [
 include_mainchain = True
 plotting = True
 
-structure_file = '/path/to/structure/file'
-trajectory_file = '/path/to/trajectory/file'
+#structure_file = '/path/to/structure/file'
+#trajectory_file = '/path/to/trajectory/file'
+structure_file = '../test_files/chainB.gro'
+trajectory_file = '../test_files/chainB.xtc'
 
 #############
 if include_mainchain:
@@ -135,20 +142,15 @@ if not plotting:
     sys.exit(0)
 
 # plotting
-sys.stderr.write('Start plotting ...\n')
-import matplotlib as mpl
-mpl.use("Agg")
-import seaborn as sbn
-
 t = np.arange(t_tot)
-sbn.plt.hold(False)
-for i in xrange(len(target_pairs)):
+for i in range(len(target_pairs)):
+    plt.clf()
     title = 'mindist_%d-%d' % tuple(target_pairs[i])
-    sbn.tsplot(t_ary[:, i], time=t)
-    sbn.plt.title(title)
-    sbn.plt.xlabel('Time step')
-    sbn.plt.ylabel('Minimum dist (A)')
-    sbn.plt.savefig('%s.png' % title)
+    plt.plot(t, t_ary[:, i])
+    plt.title(title)
+    plt.xlabel('Time step')
+    plt.ylabel('Minimum dist (A)')
+    plt.savefig('%s.png' % title)
     sys.stderr.write('%s.png saved !\n' % title)
 
-sys.stderr.write('Exitting normally.\n')
+sys.stderr.write('Exit normally.\n')
